@@ -2,15 +2,19 @@ package main
 
 import (
 	"fmt"
-	"reflect"
-	"strconv"
 	"strings"
 )
 
 const conferenceTickets int = 50
 var remainingTickets uint = 50
-var bookings = make([]map[string]string,0)
+var bookings = []User{}
 
+type User struct {
+	firstName string
+	lastName string
+	email string
+	ticketsBooked uint
+}
 
 func main() {
 
@@ -31,47 +35,49 @@ func main() {
 			continue
 		}
 		bookTickets(userTickets,firstName,lastName,email)
-		// printNames(bookings)
+		fmt.Println(bookings)
 
 	}
 
 }
 func bookTickets(userTickets uint, firstName, lastName, email string) {
 	remainingTickets -= userTickets
-	var user = make(map[string]string)
-	user["firstName"] = firstName
-	user["lastName"] = lastName
-	user["email"]= email
-	user["userTickets"] = strconv.FormatUint(uint64(userTickets),10)
+	var user = User {
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		ticketsBooked:userTickets,
+	}
+	bookings = append(bookings,user)
 	fmt.Println("tickets left:", remainingTickets)
 }
-func printNames(bookings []string) {
-	firstnames := []string{}
+func printNames() {
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		firstnames = append(firstnames, names[0])
+		var firstName = booking.firstName
+		fmt.Println(firstName)
 	}
 }
 func validateUserInput(firstName, lastName, email string, tickets uint) (bool, bool, bool, bool) {
-	isValidFirstName := len(strings.TrimSpace(firstName)) > 0 && reflect.TypeOf(firstName) == reflect.TypeOf("")
-	isValidLastName := len(strings.TrimSpace(lastName)) > 0 && reflect.TypeOf(lastName) == reflect.TypeOf("")
-	isValidEmail := len(strings.TrimSpace(email)) > 0 && reflect.TypeOf(email) == reflect.TypeOf("")
+	isValidFirstName := len(strings.TrimSpace(firstName)) > 0
+	isValidLastName := len(strings.TrimSpace(lastName)) > 0 
+	isValidEmail := len(strings.TrimSpace(email)) > 0 && strings.Contains(email,"@")
 	isTicketValid := tickets > 0 && tickets <= remainingTickets
 	return isValidFirstName, isValidLastName, isValidEmail, isTicketValid
 }
+
 func getUserInput() (string, string, string, uint) {
 	var firstName string
 	var lastName string
 	var email string
 	var userTickets uint
 
-	fmt.Println("Enter your first name:")
+	fmt.Print("Enter your first name: ")
 	fmt.Scan(&firstName)
-	fmt.Println("Enter your last name:")
+	fmt.Print("Enter your last name: ")
 	fmt.Scan(&lastName)
-	fmt.Println("Enter your email:")
+	fmt.Print("Enter your email: ")
 	fmt.Scan(&email)
-	fmt.Println("Enter number of tickets you want to book:")
+	fmt.Print("Enter number of tickets you want to book: ")
 	fmt.Scan(&userTickets)
 	return firstName, lastName, email, userTickets
 }
