@@ -3,16 +3,14 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
 const conferenceTickets int = 50
-
 var remainingTickets uint = 50
-var bookings []string
+var bookings = make([]map[string]string,0)
 
-type User struct {
-}
 
 func main() {
 
@@ -32,14 +30,19 @@ func main() {
 			fmt.Println("Invalid email")
 			continue
 		}
-		bookTickets(userTickets)
-		printNames(bookings)
+		bookTickets(userTickets,firstName,lastName,email)
+		// printNames(bookings)
 
 	}
 
 }
-func bookTickets(userTickets uint) {
+func bookTickets(userTickets uint, firstName, lastName, email string) {
 	remainingTickets -= userTickets
+	var user = make(map[string]string)
+	user["firstName"] = firstName
+	user["lastName"] = lastName
+	user["email"]= email
+	user["userTickets"] = strconv.FormatUint(uint64(userTickets),10)
 	fmt.Println("tickets left:", remainingTickets)
 }
 func printNames(bookings []string) {
